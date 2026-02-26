@@ -19,26 +19,49 @@ export const LinkedListVisualizer: React.FC = () => {
     const state = currentStep.state as Record<string, any>;
 
     if (Array.isArray(state)) {
-        nodes = state;
+        nodes = state.map((v, i) => typeof v === 'object' ? v : { id: String(i), value: v, next: i < state.length - 1 ? String(i + 1) : null });
     } else if (state.linked_list && Array.isArray(state.linked_list)) {
         nodes = state.linked_list;
+    } else if (state.linkedList && Array.isArray(state.linkedList)) {
+        nodes = state.linkedList;
     } else if (state.list && Array.isArray(state.list)) {
         nodes = state.list;
+    } else if (state.nodes && Array.isArray(state.nodes)) {
+        nodes = state.nodes;
     } else if (state.array && Array.isArray(state.array)) {
-        // Sometimes models refer to it as an array of linked list nodes visually
-        nodes = state.array.map((val: any, idx: number) => ({
-            id: String(idx),
-            value: val,
-            next: idx < state.array.length - 1 ? String(idx + 1) : null
-        }));
-    } else if (typeof state === 'object') {
-        // Fallback: If it's a nested linked structure { id, value, next: { ... } }
-        let curr: any = state.head || state.list || state.node || state;
-        while (curr && curr.value !== undefined) {
-            nodes.push({ id: curr.id || String(Math.random()), value: curr.value, next: curr.next?.id });
-            curr = curr.next;
+        nodes = state.array;
+    } else if (typeof state === 'object' && state !== null) {
+        // Did it nest it?
+        const possibleArrayKey = Object.keys(state).find(k => Array.isArray(state[k]));
+        if (possibleArrayKey) {
+            nodes = state[possibleArrayKey];
+        } else {
+            // Fallback: nested linked structure { id, value, next: { ... } }
+            let curr: any = state.head || state.list || state.node || state;
+            const seen = new Set();
+            while (curr && (curr.value !== undefined || curr.data !== undefined) && !seen.has(curr)) {
+                seen.add(curr);
+                nodes.push({ id: curr.id || String(Math.random()), value: curr.value !== undefined ? curr.value : curr.data, next: curr.next?.id });
+                curr = curr.next;
+            }
         }
     }
+
+    // Normalize nodes (if model provided raw values in the array or `{data}` instead of `{value}`)
+    nodes = nodes.map((n: any, i) => {
+        if (typeof n !== 'object') {
+            return { id: String(i), value: n, next: i < nodes.length - 1 ? String(i + 1) : null };
+        }
+        return {
+            id: n.id || String(i),
+            value: n.value !== undefined ? n.value : (n.data !== undefined ? n.data : JSON.stringify(n)),
+            next: n.next !== undefined ? n.next : (i < nodes.length - 1 ? String(i + 1) : null)
+        };
+    });
+
+    // DEBUGGING LOG
+    console.log("[LinkedListVisualizer] Raw state:", state);
+    console.log("[LinkedListVisualizer] Parsed nodes:", nodes);
 
     const highlights = currentStep.highlights || [];
     const pointers = currentStep.pointers || {};
@@ -47,8 +70,8 @@ export const LinkedListVisualizer: React.FC = () => {
     // A more advanced graph visualizer builds edges, but a LL is linear. We'll simply map them linearly.
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-8">
-            <div className="relative flex flex-wrap justify-center items-center gap-x-16 gap-y-12">
+        <div className="w-full h-full flex flex-col items-center justify-center p-8 overflow-hidden">
+            <div className="relative flex flex-nowrap justify-start items-center gap-x-16 gap-y-12 overflow-x-auto w-full max-w-full pb-12 custom-scrollbar">
                 <AnimatePresence mode="popLayout">
                     {nodes.map((node, index) => {
                         const isHighlighted = highlights.includes(String(node.id)) || highlights.includes(String(node.value)) || highlights.includes(String(index));
@@ -58,8 +81,16 @@ export const LinkedListVisualizer: React.FC = () => {
                             .filter(([_, ptrValue]) => String(ptrValue) === String(node.id) || String(ptrValue) === String(index) || String(ptrValue) === String(node.value))
                             .map(([key]) => key);
 
+                        // Always label the first node as HEAD and last node as TAIL
+                        if (index === 0 && !activePointers.map(p => p.toLowerCase()).includes('head')) {
+                            activePointers.unshift('HEAD');
+                        }
+                        if (index === nodes.length - 1 && !activePointers.map(p => p.toLowerCase()).includes('tail')) {
+                            activePointers.push('TAIL');
+                        }
+
                         return (
-                            <div key={node.id} className="relative flex items-center">
+                            <div key={node.id} className="relative flex items-center shrink-0">
                                 {/* The Data Node */}
                                 <motion.div
                                     layout
@@ -87,7 +118,7 @@ export const LinkedListVisualizer: React.FC = () => {
                                         <div className="w-2 h-2 rounded-full bg-white/30" />
                                     </div>
 
-                                    {/* Pointer Labels (e.g., "head", "curr") */}
+                                    {/* Pointer Labels (e.g., "head", "curr", "tail") */}
                                     {activePointers.length > 0 && (
                                         <motion.div
                                             initial={{ opacity: 0, y: 10 }}
@@ -103,17 +134,15 @@ export const LinkedListVisualizer: React.FC = () => {
                                     )}
                                 </motion.div>
 
-                                {/* Traversal Arrow (Render to next node if not the last item) */}
-                                {index < nodes.length - 1 && (
-                                    <motion.div
-                                        initial={{ opacity: 0, width: 0 }}
-                                        animate={{ opacity: 1, width: 64 }} /* 4rem gap */
-                                        className="relative hidden md:flex items-center -ml-2 -z-10"
-                                    >
-                                        <div className={`h-1 w-full shrink-0 rounded-full transition-colors duration-300 ${isHighlighted ? 'bg-emerald-400/80 shadow-[0_0_15px_rgba(52,211,153,0.5)]' : 'bg-white/15'}`} />
-                                        <div className={`absolute right-0 w-3 h-3 rotate-45 border-t-2 border-r-2 -mx-1 transition-colors duration-300 ${isHighlighted ? 'border-emerald-400/80' : 'border-white/15'}`} />
-                                    </motion.div>
-                                )}
+                                {/* Traversal Arrow */}
+                                <motion.div
+                                    initial={{ opacity: 0, width: 0 }}
+                                    animate={{ opacity: 1, width: 64 }} /* 4rem gap */
+                                    className="absolute left-full flex items-center z-0"
+                                >
+                                    <div className={`h-[2px] w-full shrink-0 transition-colors duration-300 ${isHighlighted ? 'bg-emerald-400/80 shadow-[0_0_15px_rgba(52,211,153,0.5)]' : 'bg-white/20'}`} />
+                                    <div className={`absolute right-1 w-2.5 h-2.5 rotate-45 border-t-[2px] border-r-[2px] transition-colors duration-300 ${isHighlighted ? 'border-emerald-400/80 shadow-[2px_-2px_6px_rgba(52,211,153,0.5)]' : 'border-white/20'}`} style={{ marginRight: '-2px' }} />
+                                </motion.div>
                             </div>
                         );
                     })}

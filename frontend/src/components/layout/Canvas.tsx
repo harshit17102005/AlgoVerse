@@ -23,18 +23,23 @@ export const Canvas: React.FC = () => {
             );
         }
 
-        const structureType = animation.structure.toLowerCase();
+        const structureType = animation.structure?.toLowerCase() || '';
+        const titleText = (animation.title || '').toLowerCase();
+
+        // 1. Force Linked List if the title explicitly mentions it! (AI often mislabels them as abstract 'array' or 'graph')
+        if (titleText.includes('linked list') || structureType === 'linked_list') {
+            return <LinkedListVisualizer />;
+        }
 
         switch (structureType) {
             case 'array':
             case 'sorting':
                 return <ArrayVisualizer />;
             case 'binary_tree':
+            case 'tree':
                 return <TreeVisualizer />;
             case 'graph':
                 return <GraphVisualizer />;
-            case 'linked_list':
-                return <LinkedListVisualizer />;
             default:
                 return (
                     <div className="flex items-center justify-center h-full text-zinc-400">

@@ -50,15 +50,39 @@ export const GraphVisualizer: React.FC = () => {
         const nodesCopy = rawNodes.map(n => ({ ...n }));
         const edgesCopy = rawEdges.map(e => ({ ...e, source: e.source, target: e.target }));
 
+        // Detect if graph is linear (like a linked list)
+        let isLinear = false;
+        if (nodesCopy.length > 0) {
+            const degree = new Map<string, number>();
+            edgesCopy.forEach(e => {
+                const s = e.source as string;
+                const t = e.target as string;
+                degree.set(s, (degree.get(s) || 0) + 1);
+                degree.set(t, (degree.get(t) || 0) + 1);
+            });
+            const maxDegree = Math.max(...Array.from(degree.values()), 0);
+            isLinear = maxDegree <= 2;
+        }
+
         const simulation = d3.forceSimulation(nodesCopy)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .force("link", d3.forceLink(edgesCopy).id((d: any) => d.id).distance(120))
+            .force("link", d3.forceLink(edgesCopy).id((d: any) => d.id).distance(100))
             .force("charge", d3.forceManyBody().strength(-400))
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .on("tick", () => {
-                setSimNodes([...nodesCopy]);
-                setSimEdges([...edgesCopy]);
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        if (isLinear) {
+            simulation.force("y", d3.forceY(height / 2).strength(1));
+            // Initialize positions so they don't tangle
+            nodesCopy.forEach((n, i) => {
+                n.x = (width / 2) + (i - nodesCopy.length / 2) * 100;
+                n.y = height / 2;
             });
+        }
+
+        simulation.on("tick", () => {
+            setSimNodes([...nodesCopy]);
+            setSimEdges([...edgesCopy]);
+        });
 
         // Run for a few ticks to stabilize initially
         simulation.tick(50);
@@ -75,11 +99,51 @@ export const GraphVisualizer: React.FC = () => {
 
             {/* SVG Edges Layer */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none text-zinc-600">
+                <defs>
+                    <marker
+                        id="arrowhead"
+                        markerWidth="10"
+                        markerHeight="7"
+                        refX="9"
+                        refY="3.5"
+                        orient="auto"
+                    >
+                        <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255,255,255,0.4)" />
+                    </marker>
+                    <marker
+                        id="arrowhead-highlight"
+                        markerWidth="10"
+                        markerHeight="7"
+                        refX="9"
+                        refY="3.5"
+                        orient="auto"
+                    >
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#fda4af" />
+                    </marker>
+                </defs>
                 <AnimatePresence>
                     {simEdges.map((edge) => {
                         const sourceHighlight = highlights.includes(edge.source.id);
                         const targetHighlight = highlights.includes(edge.target.id);
                         const isHighlightedEdge = sourceHighlight && targetHighlight;
+
+                        // Calculate the edge coordinates from border to border (r=32)
+                        const dx = edge.target.x - edge.source.x;
+                        const dy = edge.target.y - edge.source.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const nodeRadius = 32;
+
+                        let x1 = edge.source.x;
+                        let y1 = edge.source.y;
+                        let x2 = edge.target.x;
+                        let y2 = edge.target.y;
+
+                        if (distance > nodeRadius * 2) {
+                            x1 = edge.source.x + (dx * nodeRadius) / distance;
+                            y1 = edge.source.y + (dy * nodeRadius) / distance;
+                            x2 = edge.target.x - (dx * nodeRadius) / distance;
+                            y2 = edge.target.y - (dy * nodeRadius) / distance;
+                        }
 
                         return (
                             <g key={`${edge.source.id}-${edge.target.id}`}>
@@ -90,10 +154,11 @@ export const GraphVisualizer: React.FC = () => {
                                         stroke: isHighlightedEdge ? '#fda4af' : 'rgba(255,255,255,0.15)',
                                         strokeWidth: isHighlightedEdge ? 4 : 2,
                                     }}
-                                    x1={edge.source.x}
-                                    y1={edge.source.y}
-                                    x2={edge.target.x}
-                                    y2={edge.target.y}
+                                    x1={x1}
+                                    y1={y1}
+                                    x2={x2}
+                                    y2={y2}
+                                    markerEnd={isHighlightedEdge ? "url(#arrowhead-highlight)" : "url(#arrowhead)"}
                                     className="transition-colors duration-500"
                                 />
 
