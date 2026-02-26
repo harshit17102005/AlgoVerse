@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useVisualizerStore } from '../../store/useVisualizerStore';
-import { Send, Zap, BrainCircuit, Activity } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Send, Activity, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export const Sidebar: React.FC = () => {
     const [prompt, setPrompt] = useState('');
@@ -9,6 +11,7 @@ export const Sidebar: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState('');
 
     const { animation, currentStepIndex, setAnimation } = useVisualizerStore();
+    const { isAuthenticated } = useAuthStore();
     const currentStep = animation?.steps[currentStepIndex];
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -33,9 +36,10 @@ export const Sidebar: React.FC = () => {
             const animationData = await response.json();
             setAnimation(animationData);
             setPrompt('');
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
-            setErrorMsg(error.message || 'Error connecting to AI backend.');
+            const msg = error instanceof Error ? error.message : 'Error connecting to AI backend.';
+            setErrorMsg(msg);
         } finally {
             setIsLoading(false);
         }
@@ -54,6 +58,24 @@ export const Sidebar: React.FC = () => {
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12 relative overflow-y-auto custom-scrollbar">
+
+                {/* Auth Links - Top Right */}
+                <div className="absolute top-8 right-8 flex items-center gap-2">
+                    {!isAuthenticated ? (
+                        <>
+                            <Link to="/login" className="px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-colors">
+                                Log in
+                            </Link>
+                            <Link to="/signup" className="px-3 py-1.5 text-xs font-semibold bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors shadow-sm">
+                                Sign up
+                            </Link>
+                        </>
+                    ) : (
+                        <Link to="/profile" className="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer group" title="Profile">
+                            <User className="text-zinc-400 group-hover:text-white w-4 h-4 transition-colors" />
+                        </Link>
+                    )}
+                </div>
 
                 {/* Header Section */}
                 <div className="mb-12">

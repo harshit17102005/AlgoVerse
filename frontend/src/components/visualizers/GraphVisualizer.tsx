@@ -21,24 +21,27 @@ interface GraphState {
     edges: GraphEdge[];
 }
 
+const EMPTY_GRAPH_STATE: GraphState = { nodes: [], edges: [] };
+
 export const GraphVisualizer: React.FC = () => {
     const { animation, currentStepIndex } = useVisualizerStore();
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const currentStep = animation?.steps[currentStepIndex];
-    if (!currentStep) return null;
-
-    const state = currentStep.state as GraphState;
-    const rawNodes = state.nodes || [];
-    const rawEdges = state.edges || [];
-    const highlights = currentStep.highlights || [];
-
+    // Hooks must be called before early return
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [simNodes, setSimNodes] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [simEdges, setSimEdges] = useState<any[]>([]);
+
+    const currentStep = animation?.steps[currentStepIndex];
+    const state = (currentStep?.state as GraphState) || EMPTY_GRAPH_STATE;
+    const rawNodes = state.nodes || EMPTY_GRAPH_STATE.nodes;
+    const rawEdges = state.edges || EMPTY_GRAPH_STATE.edges;
+    const highlights = currentStep?.highlights || [];
 
     // D3 Force Simulation setup
     useEffect(() => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !currentStep) return;
 
         const width = 600;
         const height = 400;
@@ -48,6 +51,7 @@ export const GraphVisualizer: React.FC = () => {
         const edgesCopy = rawEdges.map(e => ({ ...e, source: e.source, target: e.target }));
 
         const simulation = d3.forceSimulation(nodesCopy)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .force("link", d3.forceLink(edgesCopy).id((d: any) => d.id).distance(120))
             .force("charge", d3.forceManyBody().strength(-400))
             .force("center", d3.forceCenter(width / 2, height / 2))
@@ -62,7 +66,9 @@ export const GraphVisualizer: React.FC = () => {
         return () => {
             simulation.stop();
         };
-    }, [rawNodes, rawEdges]);
+    }, [rawNodes, rawEdges, currentStep]);
+
+    if (!currentStep) return null;
 
     return (
         <div ref={containerRef} className="relative w-[600px] h-[400px]">

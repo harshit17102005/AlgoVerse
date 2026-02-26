@@ -1,8 +1,12 @@
+import { Routes, Route } from 'react-router-dom';
 import { Sidebar } from './components/layout/Sidebar';
 import { Canvas } from './components/layout/Canvas';
 import { PlaybackControls } from './components/controls/PlaybackControls';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
+import { Profile } from './pages/Profile';
 
-function App() {
+function Visualizer() {
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full overflow-hidden text-zinc-100 font-inter">
       {/* Left Sidebar (AI Input + Explanation) - 40% */}
@@ -16,6 +20,17 @@ function App() {
         <PlaybackControls />
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Visualizer />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/profile" element={<Profile />} />
+    </Routes>
   );
 }
 

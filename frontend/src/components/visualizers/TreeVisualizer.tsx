@@ -18,11 +18,9 @@ export const TreeVisualizer: React.FC = () => {
     const { animation, currentStepIndex } = useVisualizerStore();
 
     const currentStep = animation?.steps[currentStepIndex];
-    if (!currentStep) return null;
-
-    const state = currentStep.state as TreeState;
+    const state = (currentStep?.state as TreeState) || { tree: null };
     const root = state.tree;
-    const highlights = currentStep.highlights || [];
+    const highlights = currentStep?.highlights || [];
 
     // Use D3 to calculate tree layout
     const { nodes, links, scale } = useMemo(() => {
@@ -73,6 +71,8 @@ export const TreeVisualizer: React.FC = () => {
 
         return { nodes: nodesList, links: linksList, scale: finalScale };
     }, [root]);
+
+    if (!currentStep) return null;
 
     return (
         <div className="relative w-full h-[500px] flex justify-center items-start overflow-hidden pointer-events-none">

@@ -11,6 +11,7 @@ export type DataStructureType =
     | 'bit_manipulation';
 
 export interface BaseState {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 
