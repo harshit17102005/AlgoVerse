@@ -1,0 +1,6 @@
+﻿backend/package-lock.json
+backend/package.json
+frontend/src/App.tsx
+frontend/src/components/layout/Sidebar.tsx
+frontend/src/components/visualizers/GraphVisualizer.tsx
+frontend/src/index.css

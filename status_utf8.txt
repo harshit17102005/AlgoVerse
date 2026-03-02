@@ -1,0 +1,61 @@
+﻿On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   frontend/package-lock.json
+	modified:   frontend/package.json
+	modified:   frontend/src/App.tsx
+	modified:   frontend/src/components/visualizers/GraphVisualizer.tsx
+	modified:   frontend/src/components/visualizers/TreeVisualizer.tsx
+	modified:   frontend/src/index.css
+	modified:   frontend/src/main.tsx
+	modified:   frontend/src/types/dsa.ts
+	modified:   frontend/tsconfig.app.tsbuildinfo
+
+Unmerged paths:
+  (use "git restore --staged <file>..." to unstage)
+  (use "git add <file>..." to mark resolution)
+	both modified:   frontend/src/components/layout/Sidebar.tsx
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   backend/package-lock.json
+	modified:   backend/package.json
+	modified:   backend/src/server.ts
+	modified:   frontend/src/components/visualizers/GraphVisualizer.tsx
+	modified:   frontend/src/index.css
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.vscode/
+	backend/error.json
+	backend/error2.json
+	backend/error2_utf8.json
+	backend/error_utf8.json
+	backend/latest_logs_utf8.txt
+	backend/node_out.txt
+	backend/node_out_utf8.txt
+	backend/server_logs.txt
+	backend/server_logs_utf8.txt
+	backend/src/config/
+	backend/src/models/
+	backend/src/routes/users.ts
+	backend/src/utils/
+	backend/test_api.js
+	backend/tsc_errors.txt
+	backend/tsc_errors_utf8.txt
+	backend/tsc_errors_utf8_2.txt
+	frontend/eslint.json
+	frontend/eslint2.json
+	frontend/eslint_auth.json
+	frontend/lint-output.txt
+	frontend/src/components/layout/AuthLayout.tsx
+	frontend/src/pages/
+	frontend/src/store/useAuthStore.ts
+	git_conflicts.txt
+	git_status.txt
+	status.txt
+

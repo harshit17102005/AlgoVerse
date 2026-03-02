@@ -1,0 +1,4 @@
+﻿[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒ¢á∩╕Å  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ≡ƒöÉ encrypt with Dotenvx: https://dotenvx.com
+Server started on http://localhost:5000
+MongoDB Connected: ac-k1v3itq-shard-00-00.ucpjk95.mongodb.net

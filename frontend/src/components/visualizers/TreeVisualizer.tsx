@@ -14,6 +14,20 @@ interface TreeState {
     tree: TreeNode | null;
 }
 
+const DEPTH_COLORS = [
+    { border: 'border-sky-400/60', bg: 'bg-sky-500/20', shadow: 'shadow-[0_0_20px_rgba(14,165,233,0.3)]', text: 'text-sky-100', edge: 'rgba(14,165,233,0.5)' },
+    { border: 'border-emerald-400/60', bg: 'bg-emerald-500/20', shadow: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]', text: 'text-emerald-100', edge: 'rgba(16,185,129,0.5)' },
+    { border: 'border-violet-400/60', bg: 'bg-violet-500/20', shadow: 'shadow-[0_0_20px_rgba(139,92,246,0.3)]', text: 'text-violet-100', edge: 'rgba(139,92,246,0.5)' },
+    { border: 'border-amber-400/60', bg: 'bg-amber-500/20', shadow: 'shadow-[0_0_20px_rgba(245,158,11,0.3)]', text: 'text-amber-100', edge: 'rgba(245,158,11,0.5)' },
+    { border: 'border-fuchsia-400/60', bg: 'bg-fuchsia-500/20', shadow: 'shadow-[0_0_20px_rgba(217,70,239,0.3)]', text: 'text-fuchsia-100', edge: 'rgba(217,70,239,0.5)' },
+    { border: 'border-teal-400/60', bg: 'bg-teal-500/20', shadow: 'shadow-[0_0_20px_rgba(20,184,166,0.3)]', text: 'text-teal-100', edge: 'rgba(20,184,166,0.5)' },
+    { border: 'border-indigo-400/60', bg: 'bg-indigo-500/20', shadow: 'shadow-[0_0_20px_rgba(99,102,241,0.3)]', text: 'text-indigo-100', edge: 'rgba(99,102,241,0.5)' },
+];
+
+const getDepthColors = (depth: number) => {
+    return DEPTH_COLORS[depth % DEPTH_COLORS.length];
+};
+
 export const TreeVisualizer: React.FC = () => {
     const { animation, currentStepIndex } = useVisualizerStore();
 
@@ -92,6 +106,7 @@ export const TreeVisualizer: React.FC = () => {
                                 const sourceHighlight = highlights.includes(link.source.data.id) || highlights.includes(String(link.source.data.value));
                                 const targetHighlight = highlights.includes(link.target.data.id) || highlights.includes(String(link.target.data.value));
                                 const isHighlightedEdge = sourceHighlight && targetHighlight;
+                                const edgeColor = getDepthColors(link.target.depth).edge;
 
                                 return (
                                     <motion.path
@@ -100,7 +115,7 @@ export const TreeVisualizer: React.FC = () => {
                                         animate={{
                                             opacity: 1,
                                             pathLength: 1,
-                                            stroke: isHighlightedEdge ? '#fda4af' : 'rgba(255,255,255,0.15)', // rose-300 or white/15
+                                            stroke: isHighlightedEdge ? '#fda4af' : edgeColor,
                                             strokeWidth: isHighlightedEdge ? 4 : 2,
                                         }}
                                         exit={{ opacity: 0 }}
@@ -122,6 +137,7 @@ export const TreeVisualizer: React.FC = () => {
                             if ((node.data as any).isDummy) return null;
 
                             const isHighlighted = highlights.includes(node.data.id) || highlights.includes(String(node.data.value));
+                            const colors = getDepthColors(node.depth);
 
                             return (
                                 <motion.div
@@ -140,7 +156,7 @@ export const TreeVisualizer: React.FC = () => {
                                       transition-all duration-500 pointer-events-auto backdrop-blur-md
                                       ${isHighlighted
                                             ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] scale-110 z-10'
-                                            : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-0'
+                                            : `${colors.border} ${colors.bg} ${colors.text} ${colors.shadow} z-0`
                                         }
                                     `}
                                 >

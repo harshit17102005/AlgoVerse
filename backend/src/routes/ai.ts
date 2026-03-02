@@ -15,6 +15,14 @@ router.post('/generate', async (req: Request, res: Response) => {
 
         res.json(result);
     } catch (error: any) {
+        if (error?.message && error.message.includes('429 Too Many Requests') || error?.message?.includes('quota')) {
+            console.warn('Rate Limit Hit:', error.message);
+            return res.status(429).json({
+                error: 'Rate Limit Exceeded',
+                details: 'Google Free Tier Quota Reached! Please wait exactly 60 seconds before generating another visualization.'
+            });
+        }
+
         console.error('Error generating DSA steps:', error);
         res.status(500).json({
             error: 'Failed to generate explanation',
