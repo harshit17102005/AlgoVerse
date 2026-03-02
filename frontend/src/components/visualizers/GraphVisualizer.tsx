@@ -71,7 +71,7 @@ export const GraphVisualizer: React.FC = () => {
         <div ref={containerRef} className="relative w-[600px] h-[400px]">
 
             {/* SVG Edges Layer */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none text-zinc-600">
+            <svg className="absolute inset-0 w-full h-full pointer-events-none text-zinc-600 z-0">
                 <AnimatePresence>
                     {simEdges.map((edge) => {
                         const sourceHighlight = highlights.includes(edge.source.id);
@@ -113,7 +113,7 @@ export const GraphVisualizer: React.FC = () => {
             </svg>
 
             {/* HTML Nodes Layer */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
                 <AnimatePresence>
                     {simNodes.map((node) => {
                         const isHighlighted = highlights.includes(node.id) || highlights.includes(node.value);
@@ -133,14 +133,15 @@ export const GraphVisualizer: React.FC = () => {
                                 exit={{ opacity: 0, scale: 0 }}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 className={`
-                  absolute top-0 left-0 w-16 h-16 rounded-full border flex items-center justify-center font-space font-light text-2xl
+                  absolute top-0 left-0 w-16 h-16 rounded-full border flex flex-col items-center justify-center font-space font-light text-2xl
                   transition-colors duration-500 pointer-events-auto backdrop-blur-md
                   ${isHighlighted
-                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] z-10'
-                                        : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-0'
+                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] z-20'
+                                        : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-10'
                                     }
                 `}
                             >
+                                <span className="absolute -top-6 text-[10px] text-white/30 uppercase font-bold tracking-widest">{node.id}</span>
                                 {node.value}
                             </motion.div>
                         );
