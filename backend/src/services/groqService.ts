@@ -43,7 +43,7 @@ You must return a JSON object EXACTLY matching this structure, and absolutely no
 
 RULES:
 1. 'structure' MUST be one of: array, sorting, binary_tree, graph, linked_list.
-2. GRANULARITY: Provide step-by-step animations, aiming for around 15 to 25 steps total. Do not skip major steps, but avoid generating 40+ overly tedious micro-steps. The 'algorithm' field is a high-level summary, while the 'steps' array shows the visual progression.
+2. GRANULARITY: Provide step-by-step animations. YOU MUST strictly generate between 15 and 20 steps total. Do not skip major steps, but avoid generating 40+ overly tedious micro-steps. The 'algorithm' field is a high-level summary, while the 'steps' array shows the visual progression.
 3. LARGE INITIAL STATE: Always start the animation with a rich, expansive data structure. For example, arrays should have 8-15 elements. Trees should have 7-12 nodes spread across multiple levels. Graphs should have 5-10 nodes with multiple interconnected edges. Do NOT use trivially small structures (like a 3-node tree).
 4. For Stack or Queue operations, use "array" as the structure but you MUST include "Stack" or "Queue" in the title respectively (e.g. "Stack Push Operation").
 5. 'highlights' should contain indices of elements currently being compared or modified (as strings).
