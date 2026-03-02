@@ -54,6 +54,7 @@ RULES:
    - For graphs: "state": { "nodes": [{ "id": "A", "value": "A" }], "edges": [{ "source": "A", "target": "B" }] }
    - For linked lists: "state": { "linked_list": [{ "id": "1", "value": 10, "next": "2" }, { "id": "2", "value": 20 }] }
 8. IMPORTANT: You must output ONLY valid JSON. Do not include markdown blocks, backticks, or any conversational text.
+9. TOPIC EXPLANATION: When asked to explain a topic, algorithm, or data structure, the FIRST step in the 'steps' array MUST contain a clear, detailed explanation of what the topic is in the 'explanation' field. The 'action' can be "explain".
 `;
 
     try {
