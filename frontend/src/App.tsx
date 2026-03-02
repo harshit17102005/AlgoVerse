@@ -26,7 +26,7 @@ function App() {
           >
             {/* Left Sidebar (AI Input + Explanation) - 40% */}
             <div className="w-full lg:w-[40%] flex-shrink-0 z-20">
-              <Sidebar />
+              <Sidebar onLogout={() => setIsAuthenticated(false)} />
             </div>
 
             {/* Right Area (Visualization + Controls) - 60% */}
