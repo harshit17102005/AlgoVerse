@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVisualizerStore } from '../../store/useVisualizerStore';
 
@@ -9,11 +9,45 @@ interface ArrayState {
 export const ArrayVisualizer: React.FC = () => {
     const { animation, currentStepIndex } = useVisualizerStore();
 
+    // Pre-calculate stable IDs for elements across all steps to allow Framer Motion to physically swap boxes
+    // rather than just tearing down DOM nodes or changing text if duplicates exist.
+    const stepElementsWithIds = useMemo(() => {
+        if (!animation || !animation.steps) return [];
+
+        let prevElements: { id: string; val: number | string }[] = [];
+
+        return animation.steps.map((step, stepId) => {
+            const rawArray = (step.state as ArrayState)?.array || [];
+
+            if (stepId === 0) {
+                // Initialize unique stable IDs based on array index
+                prevElements = rawArray.map((val, i) => ({ id: `item-${i}-${val}`, val }));
+                return prevElements;
+            } else {
+                // For subsequent steps, map new raw values to the best matching previous stable ID
+                const availablePrev = [...prevElements];
+                const currentElements = rawArray.map((val, index) => {
+                    // Try to find the exact same value in the previous step
+                    const matchIdx = availablePrev.findIndex(p => p.val === val);
+                    if (matchIdx !== -1) {
+                        // Inherit ID from the matching element, so it physically moves
+                        const matched = availablePrev.splice(matchIdx, 1)[0];
+                        return { id: matched.id, val };
+                    } else {
+                        // Fallback (e.g. array resized/mutated unexpectedly)
+                        return { id: `item-new-${index}-${Math.random()}`, val };
+                    }
+                });
+                prevElements = currentElements;
+                return currentElements;
+            }
+        });
+    }, [animation]);
+
     const currentStep = animation?.steps[currentStepIndex];
     if (!currentStep) return null;
 
-    const state = currentStep.state as ArrayState;
-    const elements = state.array || [];
+    const elements = stepElementsWithIds[currentStepIndex] || [];
 
     const highlights = currentStep.highlights || [];
     const pointers = currentStep.pointers || {};
@@ -39,30 +73,31 @@ export const ArrayVisualizer: React.FC = () => {
             )}
 
             {/* Array Elements / Stack Elements */}
-            <div className={`flex ${isStack ? 'flex-col-reverse items-center gap-3' : 'flex-row flex-wrap justify-center gap-5'}`}>
+            <div className={`flex ${isStack ? 'flex-col-reverse items-center gap-3' : 'relative h-24 w-full flex-row justify-center gap-5'}`}>
                 <AnimatePresence>
-                    {elements.map((val, idx) => {
-                        const isHighlighted = highlights.includes(idx.toString()) || highlights.includes(val.toString());
+                    {elements.map((item, idx) => {
+                        const isHighlighted = highlights.includes(idx.toString()) || highlights.includes(item.val.toString());
 
                         return (
                             <motion.div
-                                key={val}
+                                key={item.id}
                                 layout
+                                layoutId={item.id}
                                 initial={{ opacity: 0, scale: 0.8, y: -20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                 className={`
                   relative flex flex-col items-center justify-center 
                   w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border font-space text-2xl font-light
-                  transition-all duration-500 backdrop-blur-md
+                  transition-colors duration-500 backdrop-blur-md
                   ${isHighlighted
-                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] scale-110 z-10'
+                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] z-10'
                                         : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)]'
                                     }
                 `}
                             >
-                                {val}
+                                {item.val}
 
                                 {/* Index label */}
                                 <span className={`absolute text-[10px] uppercase tracking-widest text-white/40 font-bold font-space ${isStack ? '-right-8 top-1/2 -translate-y-1/2' : '-bottom-8'}`}>

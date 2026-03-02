@@ -64,6 +64,9 @@ export const GraphVisualizer: React.FC = () => {
             isLinear = maxDegree <= 2;
         }
 
+        setSimNodes([]);
+        setSimEdges([]);
+
         const simulation = d3.forceSimulation(nodesCopy)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .force("link", d3.forceLink(edgesCopy).id((d: any) => d.id).distance(100))
@@ -85,12 +88,12 @@ export const GraphVisualizer: React.FC = () => {
         });
 
         // Run for a few ticks to stabilize initially
-        simulation.tick(50);
+        for (let i = 0; i < 50; i++) simulation.tick();
 
         return () => {
             simulation.stop();
         };
-    }, [rawNodes, rawEdges, currentStep]);
+    }, [rawNodes, rawEdges, currentStepIndex, animation]);
 
     if (!currentStep) return null;
 
@@ -98,7 +101,7 @@ export const GraphVisualizer: React.FC = () => {
         <div ref={containerRef} className="relative w-[600px] h-[400px]">
 
             {/* SVG Edges Layer */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none text-zinc-600">
+            <svg className="absolute inset-0 w-full h-full pointer-events-none text-zinc-600 z-0">
                 <defs>
                     <marker
                         id="arrowhead"
@@ -153,12 +156,17 @@ export const GraphVisualizer: React.FC = () => {
                                         opacity: 1,
                                         stroke: isHighlightedEdge ? '#fda4af' : 'rgba(255,255,255,0.15)',
                                         strokeWidth: isHighlightedEdge ? 4 : 2,
+                                        x1: edge.source.x,
+                                        y1: edge.source.y,
+                                        x2: edge.target.x,
+                                        y2: edge.target.y,
                                     }}
                                     x1={x1}
                                     y1={y1}
                                     x2={x2}
                                     y2={y2}
                                     markerEnd={isHighlightedEdge ? "url(#arrowhead-highlight)" : "url(#arrowhead)"}
+                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     className="transition-colors duration-500"
                                 />
 
@@ -181,7 +189,7 @@ export const GraphVisualizer: React.FC = () => {
             </svg>
 
             {/* HTML Nodes Layer */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
                 <AnimatePresence>
                     {simNodes.map((node) => {
                         const isHighlighted = highlights.includes(node.id) || highlights.includes(node.value);
@@ -189,24 +197,27 @@ export const GraphVisualizer: React.FC = () => {
                         return (
                             <motion.div
                                 key={node.id}
+                                layout
+                                layoutId={`graph-node-${node.id}`}
                                 initial={{ opacity: 0, scale: 0 }}
                                 animate={{
                                     opacity: 1,
                                     scale: 1,
-                                    x: node.x - 32, // center it (w-16 = 64 -> offset 32)
+                                    x: node.x - 32, // w-16 = 64px, offset 32px for center
                                     y: node.y - 32,
                                 }}
                                 exit={{ opacity: 0, scale: 0 }}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 className={`
-                  absolute w-16 h-16 rounded-full border flex items-center justify-center font-space font-light text-2xl
-                  transition-all duration-500 pointer-events-auto backdrop-blur-md
+                  absolute top-0 left-0 w-16 h-16 rounded-full border flex flex-col items-center justify-center font-space font-light text-2xl
+                  transition-colors duration-500 pointer-events-auto backdrop-blur-md
                   ${isHighlighted
-                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] scale-110 z-10'
-                                        : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-0'
+                                        ? 'border-rose-400/60 bg-rose-500/20 text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] z-20'
+                                        : 'border-white/10 bg-white/5 text-white/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-10'
                                     }
                 `}
                             >
+                                <span className="absolute -top-6 text-[10px] text-white/30 uppercase font-bold tracking-widest">{node.id}</span>
                                 {node.value}
                             </motion.div>
                         );
