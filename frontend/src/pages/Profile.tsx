@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, User, Code, Star, Activity, Award, Edit3, LogOut } from 'lucide-react';
+import { ArrowLeft, User, Edit3, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 export const Profile: React.FC = () => {
