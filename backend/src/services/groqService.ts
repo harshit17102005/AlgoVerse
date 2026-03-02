@@ -56,6 +56,23 @@ RULES:
 8. IMPORTANT: You must output ONLY valid JSON. Do not include markdown blocks, backticks, or any conversational text.
 9. TOPIC EXPLANATION: When asked to explain a topic, algorithm, or data structure, the FIRST step in the 'steps' array MUST contain a clear, detailed explanation of what the topic is in the 'explanation' field. The 'action' can be "explain". YOU MUST STILL provide a full step-by-step visual animation demonstrating the topic in the SUBSEQUENT steps. Do not stop at just one step.
 10. NO NULL POINTERS: All values in the 'pointers' object MUST be strings or numbers. Do NOT use 'null'. If a pointer doesn't exist yet, omit it from the object entirely.
+11. STRICT DOMAIN ENFORCEMENT: You are EXCLUSIVELY a Data Structures and Algorithms visualizer. If the user asks ANY question or provides any prompt that is NOT related to Computer Science, algorithms, data structures, or coding (e.g., "how to bake a cake", "what is the capital of France", "write a poem", "hello"), you MUST completely reject the prompt.
+    - If rejecting, return exactly this JSON:
+      {
+        "structure": "array",
+        "title": "Topic Not Supported",
+        "algorithm": ["Error: I am specifically designed to teach and visualize Data Structures and Algorithms."],
+        "complexity": { "time": "N/A", "space": "N/A" },
+        "steps": [
+          {
+            "action": "error",
+            "explanation": "I cannot answer that. Please ask me to visualize a data structure (like a Tree or Graph) or explain an algorithm (like Quicksort or Dijkstra's).",
+            "state": { "array": [] },
+            "highlights": [],
+            "pointers": {}
+          }
+        ]
+      }
 `;
 
     try {
