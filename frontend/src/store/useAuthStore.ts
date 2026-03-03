@@ -27,7 +27,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://algoverse-2.onrender.com');
             const response = await fetch(`${API_URL}/api/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     signup: async (name, email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://algoverse-2.onrender.com');
             const response = await fetch(`${API_URL}/api/users/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     updateProfile: async (id, name) => {
         set({ isLoading: true, error: null });
         try {
-            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+            const API_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://algoverse-2.onrender.com');
             const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
