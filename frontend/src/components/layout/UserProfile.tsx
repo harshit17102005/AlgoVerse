@@ -46,10 +46,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                                 <User className="w-4 h-4 group-hover:neon-glow" />
                                 My Profile
                             </button>
-                            <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors group">
-                                <Settings className="w-4 h-4 group-hover:neon-glow" />
-                                Preferences
-                            </button>
 
                             <div className="h-[1px] bg-white/5 my-1" />
 

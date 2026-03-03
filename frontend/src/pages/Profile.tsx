@@ -2,18 +2,41 @@ import React from 'react';
 import { ArrowLeft, User, Edit3, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { motion } from 'framer-motion';
+
 export const Profile: React.FC = () => {
-    const { user, isAuthenticated, logout } = useAuthStore();
+    const { user, isAuthenticated, logout, updateProfile } = useAuthStore();
     const navigate = useNavigate();
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [newName, setNewName] = React.useState(user?.name || '');
+    const [isSaving, setIsSaving] = React.useState(false);
 
     const handleSignOut = () => {
         logout();
         navigate('/');
     };
 
+    const handleSave = async () => {
+        if (!user?._id || !newName.trim()) return;
+        setIsSaving(true);
+        try {
+            await updateProfile(user._id, newName);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Failed to update profile', error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen text-zinc-100 font-inter flex flex-col items-center justify-center p-4 relative z-10">
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="h-screen w-full text-zinc-100 font-inter flex flex-col items-center justify-center p-4 relative z-10 overflow-y-auto custom-scrollbar"
+            >
                 <div className="text-center max-w-md">
                     <div className="w-16 h-16 bg-zinc-900 border border-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
                         <User className="w-8 h-8 text-zinc-500" />
@@ -29,12 +52,17 @@ export const Profile: React.FC = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         );
     }
 
     return (
-        <div className="min-h-screen text-zinc-100 font-inter font-sans overflow-y-auto custom-scrollbar pb-12 relative z-10">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.98, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="h-screen w-full text-zinc-100 font-inter font-sans overflow-y-auto custom-scrollbar pb-12 relative z-10"
+        >
             {/* Navigation Header */}
             <header className="sticky top-0 z-50 bg-black/20 backdrop-blur-3xl border-b border-white/5 px-8 py-4 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
@@ -66,8 +94,29 @@ export const Profile: React.FC = () => {
 
                         <div className="flex-1 text-center md:text-left">
                             <div className="flex justify-center md:justify-between items-start mb-2">
-                                <h1 className="text-4xl font-bold tracking-tight text-white mb-2 md:mb-0">{user?.name || 'User'}</h1>
-                                <button className="hidden md:flex p-2 bg-zinc-800/50 hover:bg-zinc-700 rounded-lg text-zinc-400 hover:text-white transition-colors">
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={newName}
+                                        onChange={(e) => setNewName(e.target.value)}
+                                        className="text-4xl font-bold tracking-tight text-white mb-2 md:mb-0 bg-white/5 border border-white/20 rounded-lg px-2 py-1 outline-none focus:border-purple-500 w-full md:w-auto"
+                                        autoFocus
+                                    />
+                                ) : (
+                                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2 md:mb-0">{user?.name || 'User'}</h1>
+                                )}
+                                <button
+                                    onClick={() => {
+                                        if (isEditing) {
+                                            handleSave();
+                                        } else {
+                                            setIsEditing(true);
+                                            setNewName(user?.name || '');
+                                        }
+                                    }}
+                                    disabled={isSaving}
+                                    className="hidden md:flex p-2 bg-zinc-800/50 hover:bg-zinc-700 rounded-lg text-zinc-400 hover:text-white transition-colors"
+                                >
                                     <Edit3 className="w-4 h-4" />
                                 </button>
                             </div>
@@ -77,8 +126,19 @@ export const Profile: React.FC = () => {
                             </p>
 
                             <div className="mt-6 flex justify-center md:justify-start gap-3">
-                                <button className="px-8 bg-white text-black font-semibold py-3 flex items-center justify-center rounded-xl shadow-lg hover:bg-zinc-200 transition-colors">
-                                    Edit Profile
+                                <button
+                                    onClick={() => {
+                                        if (isEditing) {
+                                            handleSave();
+                                        } else {
+                                            setIsEditing(true);
+                                            setNewName(user?.name || '');
+                                        }
+                                    }}
+                                    disabled={isSaving}
+                                    className="px-8 bg-white text-black font-semibold py-3 flex items-center justify-center rounded-xl shadow-lg hover:bg-zinc-200 transition-colors"
+                                >
+                                    {isSaving ? 'Saving...' : (isEditing ? 'Save Profile' : 'Edit Profile')}
                                 </button>
                                 <button onClick={handleSignOut} className="px-6 bg-rose-500/10 text-rose-400 font-semibold py-3 flex items-center justify-center rounded-xl shadow-lg hover:bg-rose-500/20 border border-rose-500/20 transition-colors gap-2">
                                     <LogOut className="w-4 h-4" />
@@ -117,7 +177,7 @@ export const Profile: React.FC = () => {
                 </div>
 
             </main>
-        </div>
+        </motion.div>
     );
 };
 

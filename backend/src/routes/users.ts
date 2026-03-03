@@ -65,6 +65,33 @@ router.post('/signup', async (req: Request, res: Response): Promise<any> => {
     }
 });
 
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Public (should ideally be protected, but keeping it simple based on current setup)
+router.put('/profile', async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { _id, name } = req.body;
+
+        const user = await User.findById(_id);
+
+        if (user) {
+            user.name = name || user.name;
+            const updatedUser = await user.save();
+
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error: any) {
+        console.error('Update profile error:', error);
+        res.status(500).json({ message: 'Server error during profile update', error: error.message });
+    }
+});
+
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Public

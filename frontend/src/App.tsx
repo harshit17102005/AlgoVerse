@@ -8,7 +8,10 @@ import { Signup } from './pages/Signup';
 import { Profile } from './pages/Profile';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+import { useNavigate } from 'react-router-dom';
+
 function Visualizer() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full overflow-hidden text-zinc-100 font-inter relative">
       <BackgroundEffects />
@@ -16,11 +19,11 @@ function Visualizer() {
       <div className="flex flex-col lg:flex-row h-full w-full absolute inset-0 p-4 lg:p-6 gap-6">
         {/* Left Sidebar (AI Input + Explanation) */}
         <div className="w-full lg:w-[35%] xl:w-[30%] flex-shrink-0 z-20 h-full">
-          <Sidebar />
+          <Sidebar onNavigateToProfile={() => navigate('/profile')} />
         </div>
 
         {/* Right Area (Visualization + Controls) */}
-        <div className="flex-1 w-full relative flex flex-col z-10 h-full">
+        <div className="flex-1 min-w-0 w-full relative flex flex-col z-10 h-full">
           <Canvas />
           <PlaybackControls />
         </div>

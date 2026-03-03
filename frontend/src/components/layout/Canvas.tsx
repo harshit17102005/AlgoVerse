@@ -50,7 +50,7 @@ export const Canvas: React.FC = () => {
     };
 
     return (
-        <div className="flex-1 w-full h-full relative flex items-center justify-center">
+        <div className="flex-1 min-w-0 w-full h-full relative flex items-center justify-center">
 
             {/* The Main Frosted Glass Panel Container */}
             <div className="w-full h-full glass-panel rounded-[2rem] lg:rounded-[2.5rem] relative overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.5)] border-t border-l border-white/20">

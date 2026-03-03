@@ -13,6 +13,7 @@ interface AuthState {
     error: string | null;
     login: (email: string, password: string) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
+    updateProfile: (id: string, name: string) => Promise<void>;
     logout: () => void;
     clearError: () => void;
 }
@@ -66,6 +67,30 @@ export const useAuthStore = create<AuthState>((set) => ({
             set({ user: data, isAuthenticated: true, isLoading: false });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Signup failed';
+            set({ error: message, isLoading: false });
+            throw error;
+        }
+    },
+
+    updateProfile: async (id, name) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await fetch('http://localhost:5000/api/users/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ _id: id, name }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Update failed');
+            }
+
+            localStorage.setItem('userInfo', JSON.stringify(data));
+            set({ user: data, isLoading: false });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Update failed';
             set({ error: message, isLoading: false });
             throw error;
         }

@@ -84,17 +84,7 @@ export const Sidebar: React.FC<{ onLogout?: () => void; onNavigateToProfile?: ()
                     className="flex-1 flex flex-col px-8 lg:px-16 py-12 relative overflow-y-auto custom-scrollbar"
                 >
 
-                    {/* Auth Links - Top Right */}
-                    {!isAuthenticated && (
-                        <div className="absolute top-8 right-8 flex items-center gap-2 z-50">
-                            <Link to="/login" className="px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-colors">
-                                Log in
-                            </Link>
-                            <Link to="/signup" className="px-3 py-1.5 text-xs font-semibold bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors shadow-sm">
-                                Sign up
-                            </Link>
-                        </div>
-                    )}
+
 
                     {/* Header Section */}
                     <div className="mb-12">
@@ -121,14 +111,14 @@ export const Sidebar: React.FC<{ onLogout?: () => void; onNavigateToProfile?: ()
 
                         <form onSubmit={handleSubmit} className="relative group">
                             <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-rose-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                            <div className="relative flex items-center glass-panel rounded-full p-2 pl-6">
+                            <div className="relative flex items-center glass-panel rounded-full p-1.5 pl-6 pr-1.5 overflow-hidden">
                                 <input
                                     type="text"
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
                                     disabled={isLoading}
                                     placeholder="e.g., 'Sort 5, 2, 9, 1'"
-                                    className="flex-1 bg-transparent text-sm text-white focus:outline-none font-inter placeholder-white/30"
+                                    className="flex-1 min-w-0 bg-transparent text-sm text-white focus:outline-none font-inter placeholder-white/30 mr-3"
                                 />
                                 <button
                                     type="submit"
@@ -190,8 +180,18 @@ export const Sidebar: React.FC<{ onLogout?: () => void; onNavigateToProfile?: ()
                         onNavigateToProfile={() => onNavigateToProfile?.()}
                     />
                 ) : (
-                    <div className="text-xs text-center text-white/30 font-space tracking-widest uppercase">
-                        Guest Session
+                    <div className="flex flex-col gap-2">
+                        <div className="text-xs text-center text-white/30 font-space tracking-widest uppercase mb-1">
+                            Guest Session
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-zinc-300 hover:bg-white/5 rounded-xl hover:text-white transition-colors flex-1 text-center">
+                                Log in
+                            </Link>
+                            <Link to="/signup" className="px-4 py-2 text-sm font-semibold bg-white text-black rounded-xl hover:bg-zinc-200 transition-colors shadow-sm flex-1 text-center">
+                                Sign up
+                            </Link>
+                        </div>
                     </div>
                 )}
             </div>

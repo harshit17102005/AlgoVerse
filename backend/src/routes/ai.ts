@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { generateDSASteps } from '../services/groqService';
+import { generateDSASteps } from '../services/geminiService';
 
 const router = Router();
 

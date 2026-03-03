@@ -73,7 +73,7 @@ export const ArrayVisualizer: React.FC = () => {
             )}
 
             {/* Array Elements / Stack Elements */}
-            <div className={`flex ${isStack ? 'flex-col-reverse items-center gap-3' : 'relative h-24 w-full flex-row justify-center gap-5'}`}>
+            <div className={`flex ${isStack ? 'flex-col-reverse items-center gap-3' : 'relative w-full flex-row flex-wrap justify-center gap-x-5 gap-y-16 py-8'}`}>
                 <AnimatePresence>
                     {elements.map((item, idx) => {
                         const isHighlighted = highlights.includes(idx.toString()) || highlights.includes(item.val.toString());

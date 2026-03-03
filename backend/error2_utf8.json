@@ -1,2 +1,8 @@
-﻿Status Code: 500
-Response: {"message":"Server error during signup","error":"next is not a function","stack":"TypeError: next is not a function\n    at model.<anonymous> (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\src\\models\\User.ts:39:5)\n    at async Kareem.execPre (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\kareem\\index.js:70:24)\n    at async model.$__save (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:376:5)\n    at async model.save (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:642:5)\n    at async D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:2778:9\n    at async Promise.all (index 0)\n    at async Function.create (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:2763:11)\n    at async D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\src\\routes\\users.ts:46:22"}
+﻿{
+    "statusCode": 500,
+    "response": {
+        "message": "Server error during signup",
+        "error": "next is not a function",
+        "stack": "TypeError: next is not a function\n    at model.<anonymous> (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\src\\models\\User.ts:39:5)\n    at async Kareem.execPre (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\kareem\\index.js:70:24)\n    at async model.$__save (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:376:5)\n    at async model.save (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:642:5)\n    at async D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:2778:9\n    at async Promise.all (index 0)\n    at async Function.create (D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\node_modules\\mongoose\\lib\\model.js:2763:11)\n    at async D:\\CSE\\PROJECTS\\AlgoVerse_TSX\\backend\\src\\routes\\users.ts:46:22"
+    }
+}
