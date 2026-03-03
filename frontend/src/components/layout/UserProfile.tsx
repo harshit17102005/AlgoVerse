@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, ChevronUp } from 'lucide-react';
+import { User, LogOut, ChevronUp } from 'lucide-react';
 
 interface UserProfileProps {
     onLogout: () => void;
