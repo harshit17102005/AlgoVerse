@@ -27,7 +27,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await fetch('http://localhost:5000/api/users/login', {
+            const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -51,7 +52,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     signup: async (name, email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await fetch('http://localhost:5000/api/users/signup', {
+            const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/users/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
@@ -75,7 +77,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     updateProfile: async (id, name) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await fetch('http://localhost:5000/api/users/profile', {
+            const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ _id: id, name }),
