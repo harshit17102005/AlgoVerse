@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { UserProfile } from './UserProfile';
 
-export const Sidebar: React.FC<{ onLogout?: () => void; onNavigateToProfile?: () => void }> = ({ onLogout, onNavigateToProfile }) => {
+export const Sidebar: React.FC<{ onNavigateToProfile?: () => void }> = ({ onNavigateToProfile }) => {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -177,7 +177,6 @@ export const Sidebar: React.FC<{ onLogout?: () => void; onNavigateToProfile?: ()
                     <UserProfile
                         userName={user?.name}
                         email={user?.email}
-                        onLogout={() => onLogout?.()}
                         onNavigateToProfile={() => onNavigateToProfile?.()}
                     />
                 ) : (

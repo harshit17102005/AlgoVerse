@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, ChevronUp } from 'lucide-react';
+import { User, ChevronUp } from 'lucide-react';
 
 interface UserProfileProps {
-    onLogout: () => void;
     onNavigateToProfile?: () => void;
     userName?: string;
     email?: string;
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({
-    onLogout,
     onNavigateToProfile,
     userName = "Developer",
     email = "dev@algoverse.com"
@@ -45,16 +43,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                             >
                                 <User className="w-4 h-4 group-hover:neon-glow" />
                                 My Profile
-                            </button>
-
-                            <div className="h-[1px] bg-white/5 my-1" />
-
-                            <button
-                                onClick={onLogout}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-rose-400 hover:text-white hover:bg-rose-500/20 rounded-lg transition-colors group"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                Sign Out
                             </button>
                         </div>
                     </motion.div>
