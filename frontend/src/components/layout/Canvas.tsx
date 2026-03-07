@@ -83,7 +83,7 @@ export const Canvas: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 50, transition: { duration: 0.2 } }}
                         transition={{ duration: 0.4, type: "spring", stiffness: 200, damping: 20 }}
-                        className="absolute top-12 right-12 w-72 max-h-[calc(100vh-160px)] overflow-y-auto glass-panel border-t border-l border-white/20 shadow-2xl rounded-3xl p-5 custom-scrollbar z-40"
+                        className="absolute top-4 right-4 lg:top-12 lg:right-12 w-[calc(100vw-32px)] sm:w-80 lg:w-72 max-h-[calc(100vh-160px)] overflow-y-auto glass-panel border-t border-l border-white/20 shadow-2xl rounded-3xl p-5 custom-scrollbar z-40"
                     >
                         <div className="flex items-center justify-between mb-5">
                             <h3 className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] flex items-center gap-2">
@@ -127,7 +127,7 @@ export const Canvas: React.FC = () => {
                         exit={{ opacity: 0, scale: 0.8 }}
                         transition={{ duration: 0.2 }}
                         onClick={() => setShowSteps(true)}
-                        className="absolute top-12 right-12 z-50 w-12 h-12 rounded-2xl glass-panel border-t border-l border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all shadow-xl backdrop-blur-md"
+                        className="absolute top-4 right-4 lg:top-12 lg:right-12 z-50 w-12 h-12 rounded-2xl glass-panel border-t border-l border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all shadow-xl backdrop-blur-md"
                         title="Show Algorithm Steps"
                     >
                         <Menu className="w-5 h-5" />

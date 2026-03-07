@@ -28,10 +28,10 @@ export const PlaybackControls: React.FC = () => {
     if (!animation) return null;
 
     return (
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 glass-panel border-t border-l border-white/20 rounded-full px-6 py-3 flex items-center gap-6 z-50 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+        <div className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 glass-panel border-t border-l border-white/20 rounded-full px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-3 sm:gap-6 z-50 shadow-[0_10px_40px_rgba(0,0,0,0.5)] w-[max-content] max-w-[90vw]">
 
             {/* Speed Control */}
-            <div className="flex items-center gap-2 pr-6 border-r border-white/10 group">
+            <div className="flex items-center gap-1 sm:gap-2 pr-4 border-r border-white/10 group">
                 <FastForward className="w-4 h-4 text-white/40 group-hover:text-white/80 transition-colors" />
                 <select
                     value={speed}

@@ -13,17 +13,17 @@ import { useNavigate } from 'react-router-dom';
 function Visualizer() {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-full overflow-hidden text-zinc-100 font-inter relative">
+    <div className="flex flex-col lg:flex-row min-h-screen w-full lg:h-screen lg:overflow-hidden overflow-y-auto text-zinc-100 font-inter relative">
       <BackgroundEffects />
 
-      <div className="flex flex-col lg:flex-row h-full w-full absolute inset-0 p-4 lg:p-6 gap-6">
+      <div className="flex flex-col lg:flex-row h-full w-full lg:absolute lg:inset-0 p-4 lg:p-6 gap-4 lg:gap-6 relative">
         {/* Left Sidebar (AI Input + Explanation) */}
-        <div className="w-full lg:w-[35%] xl:w-[30%] flex-shrink-0 z-20 h-full">
+        <div className="w-full lg:w-[35%] xl:w-[30%] order-2 lg:order-1 flex-shrink-0 z-20 h-auto lg:h-full min-h-[60vh] lg:min-h-0 pb-24 lg:pb-0">
           <Sidebar onNavigateToProfile={() => navigate('/profile')} />
         </div>
 
         {/* Right Area (Visualization + Controls) */}
-        <div className="flex-1 min-w-0 w-full relative flex flex-col z-10 h-full">
+        <div className="flex-1 min-w-0 w-full relative flex flex-col z-10 h-[60vh] lg:h-full order-1 lg:order-2">
           <Canvas />
           <PlaybackControls />
         </div>
