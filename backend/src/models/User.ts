@@ -1,7 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const userSchema = new mongoose.Schema(
+export interface IUser extends Document {
+    firebaseUid?: string;
+    email: string;
+    name: string;
+    password?: string;
+    avatarUrl?: string;
+    searchHistory?: {
+        prompt: string;
+        timestamp: Date;
+    }[];
+    createdAt: Date;
+    updatedAt: Date;
+    matchPassword: (enteredPassword: string) => Promise<boolean>;
+}
+
+const UserSchema: Schema = new Schema(
     {
         name: {
             type: String,
@@ -18,29 +33,35 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: [true, 'Please add a password'],
             minlength: 6,
             select: false
-        }
+        },
+        firebaseUid: { type: String, unique: true, sparse: true },
+        avatarUrl: { type: String },
+        searchHistory: [
+            {
+                prompt: { type: String, required: true },
+                timestamp: { type: Date, default: Date.now },
+            },
+        ],
     },
-    {
-        timestamps: true
-    }
+    { timestamps: true }
 );
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (this: any) {
-    if (!this.isModified('password')) {
-        return;
+UserSchema.pre<IUser>('save', async function (next) {
+    if (!this.isModified('password') || !this.password) {
+        return next();
     }
-
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
 
 // Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function (this: any, enteredPassword: string) {
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+    if (!this.password) return false;
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model<IUser>('User', UserSchema);
