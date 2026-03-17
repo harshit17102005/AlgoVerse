@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { UserProfile } from './UserProfile';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-export const Sidebar: React.FC<{ onNavigateToProfile?: () => void; onLogout?: () => void }> = ({ onNavigateToProfile, onLogout }) => {
+export const Sidebar: React.FC<{ onNavigateToProfile?: () => void }> = ({ onNavigateToProfile }) => {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -17,7 +17,7 @@ export const Sidebar: React.FC<{ onNavigateToProfile?: () => void; onLogout?: ()
     const { animation, currentStepIndex, setAnimation } = useVisualizerStore();
     const { isAuthenticated, user } = useAuthStore();
     const currentStep = animation?.steps[currentStepIndex];
-    const { user, refreshUser } = useAuth();
+    const { user: firebaseUser, refreshUser } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const isAutoPromptHandled = useRef(false);
@@ -78,12 +78,12 @@ export const Sidebar: React.FC<{ onNavigateToProfile?: () => void; onLogout?: ()
             setAnimation(animationData);
             setPrompt('');
             // Save to search history if logged in
-            if (user && user.firebaseUid) {
+            if (firebaseUser && firebaseUser.firebaseUid) {
                 try {
                     await fetch('http://localhost:5000/api/user/history', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ firebaseUid: user.firebaseUid, prompt: promptText })
+                        body: JSON.stringify({ firebaseUid: firebaseUser.firebaseUid, prompt: promptText })
                     });
                     await refreshUser(); // Fetch updated history
                 } catch (historyError) {
@@ -224,13 +224,13 @@ export const Sidebar: React.FC<{ onNavigateToProfile?: () => void; onLogout?: ()
 
             {/* Profile Menu Bottom Left */}
             <div className="mt-auto border-t border-white/5 p-4 lg:p-6 bg-black/10">
-                {isAuthenticated || user ? (
+                {isAuthenticated || firebaseUser ? (
                     <UserProfile
                         onLogout={() => useAuthStore.getState().logout?.()}
                         onNavigateToProfile={() => onNavigateToProfile?.()}
-                        userName={isAuthenticated ? useAuthStore.getState().user?.name : user?.name}
-                        email={isAuthenticated ? useAuthStore.getState().user?.email : user?.email}
-                        avatarUrl={user?.avatarUrl}
+                        userName={isAuthenticated ? user?.name : firebaseUser?.name}
+                        email={isAuthenticated ? user?.email : firebaseUser?.email}
+                        avatarUrl={firebaseUser?.avatarUrl}
                     />
                 ) : (
                     <div className="flex flex-col gap-2">

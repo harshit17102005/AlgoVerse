@@ -1,0 +1,11 @@
+﻿src/App.tsx(1,1): error TS6133: 'useState' is declared but its value is never read.
+src/App.tsx(13,1): error TS6133: 'ProfilePage' is declared but its value is never read.
+src/App.tsx(17,10): error TS6133: 'AnimatePresence' is declared but its value is never read.
+src/App.tsx(18,24): error TS6133: 'useAuth' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(10,119): error TS6133: 'onLogout' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(18,30): error TS2451: Cannot redeclare block-scoped variable 'user'.
+src/components/layout/Sidebar.tsx(20,13): error TS2451: Cannot redeclare block-scoped variable 'user'.
+src/components/layout/Sidebar.tsx(81,30): error TS2339: Property 'firebaseUid' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(86,66): error TS2339: Property 'firebaseUid' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(229,25): error TS2322: Type '{ onLogout: () => void; onNavigateToProfile: () => void | undefined; userName: string | undefined; email: string | undefined; avatarUrl: any; }' is not assignable to type 'IntrinsicAttributes & UserProfileProps'.
+src/components/layout/Sidebar.tsx(233,42): error TS2339: Property 'avatarUrl' does not exist on type 'User'.

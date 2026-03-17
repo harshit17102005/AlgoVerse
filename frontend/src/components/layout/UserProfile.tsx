@@ -7,6 +7,7 @@ interface UserProfileProps {
     userName?: string;
     email?: string;
     avatarUrl?: string;
+    onLogout?: () => void;
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Sidebar } from './components/layout/Sidebar';
 import { Canvas } from './components/layout/Canvas';
@@ -10,12 +10,12 @@ import { Profile } from './pages/Profile';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 import { AuthPage } from './components/auth/AuthPage';
-import { ProfilePage } from './components/profile/ProfilePage';
+
 import { DashboardPage } from './components/dashboard/DashboardPage';
 import { RoadmapPage } from './components/roadmap/RoadmapPage';
 import { ProblemPage } from './components/roadmap/ProblemPage';
-import { AnimatePresence, motion } from 'framer-motion';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { motion } from 'framer-motion';
+import { AuthProvider } from './contexts/AuthContext';
 
 function Visualizer() {
   const navigate = useNavigate();
